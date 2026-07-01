@@ -1,4 +1,4 @@
-# Sistema de Chamados
+# Sistema de Chamados - SGC
 
 Projeto desenvolvido para a disciplina de Linguagem de Programação IV.
 

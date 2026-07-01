@@ -1,39 +1,91 @@
 <?php
 
-require_once "../app/controllers/ChamadoController.php";
+$modulo = $_GET['modulo'] ?? 'dashboard';
 
-$controller = new ChamadoController();
+$action = $_GET['action'] ?? 'index';
 
-$action = $_GET['action'] ?? 'listar';
+switch($modulo)
+{
 
-switch ($action) {
+    case 'clientes':
 
-    case 'novo':
-        $controller->novo();
+        require_once "../app/controllers/ClienteController.php";
+
+        $controller = new ClienteController();
+
         break;
 
-    case 'salvar':
-        $controller->salvar();
+    case 'chamados':
+
+        require_once "../app/controllers/ChamadoController.php";
+
+        $controller = new ChamadoController();
+
         break;
 
-    case 'excluir':
-        $controller->excluir();
+    case 'equipes':
+
+        require_once "../app/controllers/EquipeController.php";
+
+        $controller = new EquipeController();
+
         break;
 
-    case 'editar':
-        $controller->editar();
-        break;
+    case 'agendamentos':
 
-    case 'atualizar':
-        $controller->atualizar();
-        break;
+        require_once "../app/controllers/AgendamentoController.php";
 
-    case 'dashboard':
-        $controller->dashboard();
+        $controller = new AgendamentoController();
+
         break;
 
     default:
+
+        require_once "../app/controllers/DashboardController.php";
+
+        $controller = new DashboardController();
+
+        break;
+
+}
+
+switch($action)
+{
+
+    case 'novo':
+
+        $controller->novo();
+
+        break;
+
+    case 'salvar':
+
+        $controller->salvar();
+
+        break;
+
+    case 'editar':
+
+        $controller->editar();
+
+        break;
+
+    case 'atualizar':
+
+        $controller->atualizar();
+
+        break;
+
+    case 'excluir':
+
+        $controller->excluir();
+
+        break;
+
+    default:
+
         $controller->index();
+
         break;
 
 }

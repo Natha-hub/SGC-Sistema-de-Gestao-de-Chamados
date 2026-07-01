@@ -1,164 +1,139 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
+<?php
+
+require_once "../config/database.php";
+
+class Chamado
+{
+    private $conn;
+
+    public function __construct()
+    {
+        $database = new Database();
+        $this->conn = $database->conectar();
+    }
+
+    public function listar()
+    {
+        $sql = "SELECT * FROM chamados ORDER BY id DESC";
+
+        $stmt = $this->conn->prepare($sql);
+
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    public function salvar($dados)
+    {
+    $sql = "INSERT INTO chamados
+            (cliente, cidade, prioridade, status, descricao, data_abertura)
+            VALUES
+            (:cliente, :cidade, :prioridade, :status, :descricao, :data_abertura)";
+
+    $stmt = $this->conn->prepare($sql);
+
+    return $stmt->execute([
+        ':cliente' => $dados['cliente'],
+        ':cidade' => $dados['cidade'],
+        ':prioridade' => $dados['prioridade'],
+        ':status' => $dados['status'],
+        ':descricao' => $dados['descricao'],
+        ':data_abertura' => $dados['data_abertura']
+    ]);
+    }
+    public function excluir($id)
+    {
+    $sql = "DELETE FROM chamados WHERE id = :id";
 
-<head>
+    $stmt = $this->conn->prepare($sql);
 
-    <meta charset="UTF-8">
-    <title>Sistema de Chamados</title>
+    return $stmt->execute([
+        ':id' => $id
+    ]);
+    }
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">    
+    public function buscarPorId($id)
+{
+    $sql = "SELECT * FROM chamados WHERE id = :id";
 
-</head>
+    $stmt = $this->conn->prepare($sql);
 
-<body>
+    $stmt->execute([
+        ':id' => $id
+    ]);
 
-<div class="container mt-5">
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
 
-<div class="d-flex justify-content-between align-items-center mb-4">
+public function atualizar($dados)
+{
+    $sql = "UPDATE chamados SET
 
-    <h2>Sistema de Chamados</h2>
+        cliente = :cliente,
+        cidade = :cidade,
+        prioridade = :prioridade,
+        status = :status,
+        descricao = :descricao,
+        data_abertura = :data_abertura
 
-    <div>
+        WHERE id = :id";
 
-        <a href="index.php?action=dashboard" class="btn btn-success">
-            <i class="bi bi-bar-chart-fill"></i> Dashboard
-        </a>
+    $stmt = $this->conn->prepare($sql);
 
-        <a href="index.php?action=novo" class="btn btn-primary">
-            <i class="bi bi-plus-circle"></i> Novo Chamado
-        </a>
+    return $stmt->execute([
+        ':cliente'=>$dados['cliente'],
+        ':cidade'=>$dados['cidade'],
+        ':prioridade'=>$dados['prioridade'],
+        ':status'=>$dados['status'],
+        ':descricao'=>$dados['descricao'],
+        ':data_abertura'=>$dados['data_abertura'],
+        ':id'=>$dados['id']
+    ]);
+}
 
-    </div>
+public function pesquisar($cliente)
+{
+    $sql = "SELECT * FROM chamados
+            WHERE cliente LIKE :cliente
+            ORDER BY id DESC";
 
-</div>
+    $stmt = $this->conn->prepare($sql);
 
+    $stmt->execute([
+        ':cliente' => "%".$cliente."%"
+    ]);
 
-<form method="GET" action="index.php" class="row mb-3">
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 
-    <div class="col-md-8">
+public function dashboard()
+{
+    $sql = "SELECT status, COUNT(*) AS total
+            FROM chamados
+            GROUP BY status";
 
-        <input
-            type="text"
-            name="pesquisa"
-            class="form-control"
-            placeholder="Pesquisar por cliente">
+    $stmt = $this->conn->prepare($sql);
 
-    </div>
+    $stmt->execute();
 
-    <div class="col-md-2">
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 
-        <button class="btn btn-primary w-100">
+public function totais()
+{
+    $sql = "SELECT
+            COUNT(*) AS total,
+            SUM(status='Aberto') AS abertos,
+            SUM(status='Em andamento') AS andamento,
+            SUM(status='Finalizado') AS finalizados
+            FROM chamados";
 
-            <i class="bi bi-search"></i>
+    $stmt = $this->conn->prepare($sql);
 
-            Pesquisar
+    $stmt->execute();
 
-        </button>
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
 
-    </div>
 
-    <div class="col-md-2">
 
-        <a href="index.php" class="btn btn-secondary w-100">
-
-            Limpar
-
-        </a>
-
-    </div>
-
-</form>
-
-    <table class="table table-bordered table-striped">
-
-        <thead class="table-dark">
-
-        <tr>
-
-<th>ID</th>
-<th>Cliente</th>
-<th>Cidade</th>
-<th>Prioridade</th>
-<th>Status</th>
-<th>Data</th>
-<th>Ações</th>
-
-        </tr>
-
-    </thead>
-
-        <tbody>
-
-        <?php if(count($chamados) > 0): ?>
-
-            <?php foreach($chamados as $chamado): ?>
-
-               <tr>
-
-    <td><?= $chamado['id'] ?></td>
-    <td><?= $chamado['cliente'] ?></td>
-    <td><?= $chamado['cidade'] ?></td>
-    <td><?= $chamado['prioridade'] ?></td>
-
-    <td>
-        
-
-<?php if($chamado['status']=="Aberto"): ?>
-
-<span class="badge bg-success">Aberto</span>
-
-<?php elseif($chamado['status']=="Em andamento"): ?>
-
-<span class="badge bg-warning text-dark">Em andamento</span>
-
-<?php else: ?>
-
-<span class="badge bg-danger">Finalizado</span>
-
-<?php endif; ?>
-
-</td>
-
-<td><?= date('d/m/Y', strtotime($chamado['data_abertura'])) ?></td>
-
-<td>
-
-    <a href="index.php?action=editar&id=<?= $chamado['id'] ?>" class="btn btn-warning btn-sm">
-        <i class="bi bi-pencil-square"></i> Editar
-    </a>
-
-    <a href="index.php?action=excluir&id=<?= $chamado['id'] ?>"
-       class="btn btn-danger btn-sm"
-       onclick="return confirm('Deseja excluir este chamado?')">
-        <i class="bi bi-trash"></i> Excluir
-    </a>
-
-</td>
-
-    
-</tr>
-
-            <?php endforeach; ?>
-
-        <?php else: ?>
-
-            <tr>
-
-                <td colspan="7" class="text-center">
-                    Nenhum chamado cadastrado.
-                </td>
-
-            </tr>
-
-        <?php endif; ?>
-
-        </tbody>
-
-    </table>
-
-</div>
-
-</body>
-</html>
+}   

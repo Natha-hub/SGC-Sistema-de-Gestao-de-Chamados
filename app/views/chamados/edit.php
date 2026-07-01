@@ -1,117 +1,139 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
+<?php
 
-<head>
+require_once "../config/database.php";
 
-    <meta charset="UTF-8">
+class Chamado
+{
+    private $conn;
 
-    <title>Editar Chamado</title>
+    public function __construct()
+    {
+        $database = new Database();
+        $this->conn = $database->conectar();
+    }
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    public function listar()
+    {
+        $sql = "SELECT * FROM chamados ORDER BY id DESC";
 
-</head>
+        $stmt = $this->conn->prepare($sql);
 
-<body>
+        $stmt->execute();
 
-<div class="container mt-5">
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    public function salvar($dados)
+    {
+    $sql = "INSERT INTO chamados
+            (cliente, cidade, prioridade, status, descricao, data_abertura)
+            VALUES
+            (:cliente, :cidade, :prioridade, :status, :descricao, :data_abertura)";
 
-    <h2 class="mb-4">Editar Chamado</h2>
+    $stmt = $this->conn->prepare($sql);
 
-    <form method="POST" action="index.php?action=atualizar">
+    return $stmt->execute([
+        ':cliente' => $dados['cliente'],
+        ':cidade' => $dados['cidade'],
+        ':prioridade' => $dados['prioridade'],
+        ':status' => $dados['status'],
+        ':descricao' => $dados['descricao'],
+        ':data_abertura' => $dados['data_abertura']
+    ]);
+    }
+    public function excluir($id)
+    {
+    $sql = "DELETE FROM chamados WHERE id = :id";
 
-        <input type="hidden" name="id" value="<?= $chamado['id'] ?>">
+    $stmt = $this->conn->prepare($sql);
 
-        <div class="mb-3">
+    return $stmt->execute([
+        ':id' => $id
+    ]);
+    }
 
-            <label class="form-label">Cliente</label>
+    public function buscarPorId($id)
+{
+    $sql = "SELECT * FROM chamados WHERE id = :id";
 
-            <input
-                type="text"
-                name="cliente"
-                class="form-control"
-                value="<?= $chamado['cliente'] ?>"
-                required>
+    $stmt = $this->conn->prepare($sql);
 
-        </div>
+    $stmt->execute([
+        ':id' => $id
+    ]);
 
-        <div class="mb-3">
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
 
-            <label class="form-label">Cidade</label>
+public function atualizar($dados)
+{
+    $sql = "UPDATE chamados SET
 
-            <input
-                type="text"
-                name="cidade"
-                class="form-control"
-                value="<?= $chamado['cidade'] ?>"
-                required>
+        cliente = :cliente,
+        cidade = :cidade,
+        prioridade = :prioridade,
+        status = :status,
+        descricao = :descricao,
+        data_abertura = :data_abertura
 
-        </div>
+        WHERE id = :id";
 
-        <div class="mb-3">
+    $stmt = $this->conn->prepare($sql);
 
-            <label class="form-label">Prioridade</label>
+    return $stmt->execute([
+        ':cliente'=>$dados['cliente'],
+        ':cidade'=>$dados['cidade'],
+        ':prioridade'=>$dados['prioridade'],
+        ':status'=>$dados['status'],
+        ':descricao'=>$dados['descricao'],
+        ':data_abertura'=>$dados['data_abertura'],
+        ':id'=>$dados['id']
+    ]);
+}
 
-            <select name="prioridade" class="form-select">
+public function pesquisar($cliente)
+{
+    $sql = "SELECT * FROM chamados
+            WHERE cliente LIKE :cliente
+            ORDER BY id DESC";
 
-                <option <?= $chamado['prioridade']=="Baixa"?"selected":"" ?>>Baixa</option>
+    $stmt = $this->conn->prepare($sql);
 
-                <option <?= $chamado['prioridade']=="Média"?"selected":"" ?>>Média</option>
+    $stmt->execute([
+        ':cliente' => "%".$cliente."%"
+    ]);
 
-                <option <?= $chamado['prioridade']=="Alta"?"selected":"" ?>>Alta</option>
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 
-            </select>
+public function dashboard()
+{
+    $sql = "SELECT status, COUNT(*) AS total
+            FROM chamados
+            GROUP BY status";
 
-        </div>
+    $stmt = $this->conn->prepare($sql);
 
-        <div class="mb-3">
+    $stmt->execute();
 
-            <label class="form-label">Status</label>
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 
-            <select name="status" class="form-select">
+public function totais()
+{
+    $sql = "SELECT
+            COUNT(*) AS total,
+            SUM(status='Aberto') AS abertos,
+            SUM(status='Em andamento') AS andamento,
+            SUM(status='Finalizado') AS finalizados
+            FROM chamados";
 
-                <option <?= $chamado['status']=="Aberto"?"selected":"" ?>>Aberto</option>
+    $stmt = $this->conn->prepare($sql);
 
-                <option <?= $chamado['status']=="Em andamento"?"selected":"" ?>>Em andamento</option>
+    $stmt->execute();
 
-                <option <?= $chamado['status']=="Finalizado"?"selected":"" ?>>Finalizado</option>
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
 
-            </select>
 
-        </div>
 
-        <div class="mb-3">
-
-            <label class="form-label">Descrição</label>
-
-            <textarea
-                name="descricao"
-                class="form-control"><?= $chamado['descricao'] ?></textarea>
-
-        </div>
-
-        <div class="mb-4">
-
-            <label class="form-label">Data</label>
-
-            <input
-                type="date"
-                name="data_abertura"
-                class="form-control"
-                value="<?= $chamado['data_abertura'] ?>">
-
-        </div>
-
-        <button class="btn btn-success">
-            Salvar Alterações
-        </button>
-
-        <a href="index.php" class="btn btn-secondary">
-            Cancelar
-        </a>
-
-    </form>
-
-</div>
-
-</body>
-</html>
+}   
