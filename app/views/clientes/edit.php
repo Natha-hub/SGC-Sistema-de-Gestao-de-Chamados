@@ -1,139 +1,172 @@
-<?php
+<?php require "../app/views/layout/header.php"; ?>
+<?php require "../app/views/layout/navbar.php"; ?>
 
-require_once "../config/database.php";
+<h2 class="mb-4">
 
-class Chamado
-{
-    private $conn;
+    <i class="bi bi-pencil-square"></i>
 
-    public function __construct()
-    {
-        $database = new Database();
-        $this->conn = $database->conectar();
-    }
+    Editar Cliente
 
-    public function listar()
-    {
-        $sql = "SELECT * FROM chamados ORDER BY id DESC";
+</h2>
 
-        $stmt = $this->conn->prepare($sql);
+<form action="index.php?modulo=clientes&action=atualizar" method="POST">
 
-        $stmt->execute();
+<input
+type="hidden"
+name="id"
+value="<?= $cliente['id'] ?>">
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-    public function salvar($dados)
-    {
-    $sql = "INSERT INTO chamados
-            (cliente, cidade, prioridade, status, descricao, data_abertura)
-            VALUES
-            (:cliente, :cidade, :prioridade, :status, :descricao, :data_abertura)";
+<div class="row">
 
-    $stmt = $this->conn->prepare($sql);
+    <div class="col-md-6 mb-3">
 
-    return $stmt->execute([
-        ':cliente' => $dados['cliente'],
-        ':cidade' => $dados['cidade'],
-        ':prioridade' => $dados['prioridade'],
-        ':status' => $dados['status'],
-        ':descricao' => $dados['descricao'],
-        ':data_abertura' => $dados['data_abertura']
-    ]);
-    }
-    public function excluir($id)
-    {
-    $sql = "DELETE FROM chamados WHERE id = :id";
+        <label>Nome</label>
 
-    $stmt = $this->conn->prepare($sql);
+        <input
+            type="text"
+            name="nome"
+            class="form-control"
+            value="<?= $cliente['nome'] ?>"
+            required>
 
-    return $stmt->execute([
-        ':id' => $id
-    ]);
-    }
+    </div>
 
-    public function buscarPorId($id)
-{
-    $sql = "SELECT * FROM chamados WHERE id = :id";
+    <div class="col-md-3 mb-3">
 
-    $stmt = $this->conn->prepare($sql);
+        <label>Telefone</label>
 
-    $stmt->execute([
-        ':id' => $id
-    ]);
+        <input
+            type="text"
+            name="telefone"
+            class="form-control"
+            value="<?= $cliente['telefone'] ?>">
 
-    return $stmt->fetch(PDO::FETCH_ASSOC);
-}
+    </div>
 
-public function atualizar($dados)
-{
-    $sql = "UPDATE chamados SET
+    <div class="col-md-3 mb-3">
 
-        cliente = :cliente,
-        cidade = :cidade,
-        prioridade = :prioridade,
-        status = :status,
-        descricao = :descricao,
-        data_abertura = :data_abertura
+        <label>Email</label>
 
-        WHERE id = :id";
+        <input
+            type="email"
+            name="email"
+            class="form-control"
+            value="<?= $cliente['email'] ?>">
 
-    $stmt = $this->conn->prepare($sql);
+    </div>
 
-    return $stmt->execute([
-        ':cliente'=>$dados['cliente'],
-        ':cidade'=>$dados['cidade'],
-        ':prioridade'=>$dados['prioridade'],
-        ':status'=>$dados['status'],
-        ':descricao'=>$dados['descricao'],
-        ':data_abertura'=>$dados['data_abertura'],
-        ':id'=>$dados['id']
-    ]);
-}
+    <div class="col-md-4 mb-3">
 
-public function pesquisar($cliente)
-{
-    $sql = "SELECT * FROM chamados
-            WHERE cliente LIKE :cliente
-            ORDER BY id DESC";
+        <label>Cidade</label>
 
-    $stmt = $this->conn->prepare($sql);
+        <input
+            type="text"
+            name="cidade"
+            class="form-control"
+            value="<?= $cliente['cidade'] ?>">
 
-    $stmt->execute([
-        ':cliente' => "%".$cliente."%"
-    ]);
+    </div>
 
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
+    <div class="col-md-4 mb-3">
 
-public function dashboard()
-{
-    $sql = "SELECT status, COUNT(*) AS total
-            FROM chamados
-            GROUP BY status";
+        <label>Bairro</label>
 
-    $stmt = $this->conn->prepare($sql);
+        <input
+            type="text"
+            name="bairro"
+            class="form-control"
+            value="<?= $cliente['bairro'] ?>">
 
-    $stmt->execute();
+    </div>
 
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
+    <div class="col-md-4 mb-3">
 
-public function totais()
-{
-    $sql = "SELECT
-            COUNT(*) AS total,
-            SUM(status='Aberto') AS abertos,
-            SUM(status='Em andamento') AS andamento,
-            SUM(status='Finalizado') AS finalizados
-            FROM chamados";
+        <label>Endereço</label>
 
-    $stmt = $this->conn->prepare($sql);
+        <input
+            type="text"
+            name="endereco"
+            class="form-control"
+            value="<?= $cliente['endereco'] ?>">
 
-    $stmt->execute();
+    </div>
 
-    return $stmt->fetch(PDO::FETCH_ASSOC);
-}
+    <div class="col-md-2 mb-3">
 
+        <label>Número</label>
 
+        <input
+            type="text"
+            name="numero"
+            class="form-control"
+            value="<?= $cliente['numero'] ?>">
 
-}   
+    </div>
+
+    <div class="col-md-5 mb-3">
+
+        <label>Plano</label>
+
+        <input
+            type="text"
+            name="plano"
+            class="form-control"
+            value="<?= $cliente['plano'] ?>">
+
+    </div>
+
+    <div class="col-md-3 mb-3">
+
+        <label>Tecnologia</label>
+
+        <select
+            name="tecnologia"
+            class="form-select">
+
+            <option <?= $cliente['tecnologia']=="FTTH"?"selected":"" ?>>FTTH</option>
+
+            <option <?= $cliente['tecnologia']=="Radio"?"selected":"" ?>>Radio</option>
+
+            <option <?= $cliente['tecnologia']=="Fibra Dedicada"?"selected":"" ?>>Fibra Dedicada</option>
+
+        </select>
+
+    </div>
+
+    <div class="col-md-2 mb-3">
+
+        <label>Status</label>
+
+        <select
+            name="status"
+            class="form-select">
+
+            <option <?= $cliente['status']=="Ativo"?"selected":"" ?>>Ativo</option>
+
+            <option <?= $cliente['status']=="Inativo"?"selected":"" ?>>Inativo</option>
+
+        </select>
+
+    </div>
+
+</div>
+
+<button class="btn btn-success">
+
+    <i class="bi bi-check-circle"></i>
+
+    Salvar Alterações
+
+</button>
+
+<a
+href="index.php?modulo=clientes"
+class="btn btn-secondary">
+
+Cancelar
+
+</a>
+
+</form>
+
+<?php require "../app/views/layout/footer.php"; ?>

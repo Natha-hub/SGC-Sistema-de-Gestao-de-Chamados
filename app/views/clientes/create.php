@@ -1,130 +1,155 @@
 <?php require "../app/views/layout/header.php"; ?>
 <?php require "../app/views/layout/navbar.php"; ?>
 
-<div class="d-flex justify-content-between align-items-center mb-4">
+<h2 class="mb-4">
 
-    <h2>
+    <i class="bi bi-person-plus"></i>
 
-        <i class="bi bi-people"></i>
+    Novo Cliente
 
-        Clientes
+</h2>
 
-    </h2>
+<form action="index.php?modulo=clientes&action=salvar" method="POST">
 
-    <a href="index.php?modulo=clientes&action=novo"
-       class="btn btn-primary">
+<div class="row">
 
-        <i class="bi bi-plus-circle"></i>
+    <div class="col-md-6 mb-3">
 
-        Novo Cliente
+        <label>Nome</label>
 
-    </a>
+        <input
+            type="text"
+            name="nome"
+            class="form-control"
+            required>
+
+    </div>
+
+    <div class="col-md-3 mb-3">
+
+        <label>Telefone</label>
+
+        <input
+            type="text"
+            name="telefone"
+            class="form-control">
+
+    </div>
+
+    <div class="col-md-3 mb-3">
+
+        <label>Email</label>
+
+        <input
+            type="email"
+            name="email"
+            class="form-control">
+
+    </div>
+
+    <div class="col-md-4 mb-3">
+
+        <label>Cidade</label>
+
+        <input
+            type="text"
+            name="cidade"
+            class="form-control">
+
+    </div>
+
+    <div class="col-md-4 mb-3">
+
+        <label>Bairro</label>
+
+        <input
+            type="text"
+            name="bairro"
+            class="form-control">
+
+    </div>
+
+    <div class="col-md-4 mb-3">
+
+        <label>Endereço</label>
+
+        <input
+            type="text"
+            name="endereco"
+            class="form-control">
+
+    </div>
+
+    <div class="col-md-2 mb-3">
+
+        <label>Número</label>
+
+        <input
+            type="text"
+            name="numero"
+            class="form-control">
+
+    </div>
+
+    <div class="col-md-5 mb-3">
+
+        <label>Plano</label>
+
+        <input
+            type="text"
+            name="plano"
+            class="form-control">
+
+    </div>
+
+    <div class="col-md-3 mb-3">
+
+        <label>Tecnologia</label>
+
+        <select
+            name="tecnologia"
+            class="form-select">
+
+            <option>FTTH</option>
+            <option>Radio</option>
+            <option>Fibra Dedicada</option>
+
+        </select>
+
+    </div>
+
+    <div class="col-md-2 mb-3">
+
+        <label>Status</label>
+
+        <select
+            name="status"
+            class="form-select">
+
+            <option>Ativo</option>
+            <option>Inativo</option>
+
+        </select>
+
+    </div>
 
 </div>
 
-<table class="table table-bordered table-striped">
+<button class="btn btn-success">
 
-    <thead class="table-dark">
+    <i class="bi bi-check-circle"></i>
 
-        <tr>
+    Salvar
 
-            <th>ID</th>
-            <th>Nome</th>
-            <th>Telefone</th>
-            <th>Cidade</th>
-            <th>Plano</th>
-            <th>Status</th>
-            <th width="180">Ações</th>
+</button>
 
-        </tr>
+<a href="index.php?modulo=clientes"
+   class="btn btn-secondary">
 
-    </thead>
+    Cancelar
 
-    <tbody>
+</a>
 
-    <?php if(count($clientes)>0): ?>
-
-        <?php foreach($clientes as $cliente): ?>
-
-        <tr>
-
-            <td><?= $cliente['id'] ?></td>
-
-            <td><?= $cliente['nome'] ?></td>
-
-            <td><?= $cliente['telefone'] ?></td>
-
-            <td><?= $cliente['cidade'] ?></td>
-
-            <td><?= $cliente['plano'] ?></td>
-
-            <td>
-
-                <?php if($cliente['status']=="Ativo"): ?>
-
-                    <span class="badge bg-success">
-
-                        Ativo
-
-                    </span>
-
-                <?php else: ?>
-
-                    <span class="badge bg-danger">
-
-                        Inativo
-
-                    </span>
-
-                <?php endif; ?>
-
-            </td>
-
-            <td>
-
-                <a
-                href="index.php?modulo=clientes&action=editar&id=<?= $cliente['id'] ?>"
-                class="btn btn-warning btn-sm">
-
-                    <i class="bi bi-pencil-square"></i>
-
-                    Editar
-
-                </a>
-
-                <a
-                href="index.php?modulo=clientes&action=excluir&id=<?= $cliente['id'] ?>"
-                class="btn btn-danger btn-sm"
-                onclick="return confirm('Deseja excluir este cliente?')">
-
-                    <i class="bi bi-trash"></i>
-
-                    Excluir
-
-                </a>
-
-            </td>
-
-        </tr>
-
-        <?php endforeach; ?>
-
-    <?php else: ?>
-
-        <tr>
-
-            <td colspan="7" class="text-center">
-
-                Nenhum cliente cadastrado.
-
-            </td>
-
-        </tr>
-
-    <?php endif; ?>
-
-    </tbody>
-
-</table>
+</form>
 
 <?php require "../app/views/layout/footer.php"; ?>
