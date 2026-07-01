@@ -78,9 +78,11 @@ class Chamado
     ]);
     }
 
-    public function buscarPorId($id)
+   public function buscarPorId($id)
 {
-    $sql = "SELECT * FROM chamados WHERE id = :id";
+    $sql = "SELECT *
+            FROM chamados
+            WHERE id = :id";
 
     $stmt = $this->conn->prepare($sql);
 
