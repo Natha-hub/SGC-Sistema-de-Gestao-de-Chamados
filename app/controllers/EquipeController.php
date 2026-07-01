@@ -1,131 +1,66 @@
 <?php
 
-require_once "../config/database.php";
+require_once "../app/models/Equipe.php";
 
-class Equipe
+class EquipeController
 {
-    private $conn;
+    private $model;
 
     public function __construct()
     {
-        $database = new Database();
-        $this->conn = $database->conectar();
+        $this->model = new Equipe();
     }
 
-    public function listar()
+    public function index()
     {
-        $sql = "SELECT * FROM equipes ORDER BY id DESC";
+        if(isset($_GET['pesquisa']) && $_GET['pesquisa'] != "")
+        {
+            $equipes = $this->model->pesquisar($_GET['pesquisa']);
+        }
+        else
+        {
+            $equipes = $this->model->listar();
+        }
 
-        $stmt = $this->conn->prepare($sql);
-
-        $stmt->execute();
-
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        require "../app/views/equipes/index.php";
     }
 
-    public function salvar($dados)
+    public function novo()
     {
-        $sql = "INSERT INTO equipes
-        (
-            nome,
-            tipo,
-            empresa,
-            cidade,
-            telefone,
-            status
-        )
-
-        VALUES
-        (
-            :nome,
-            :tipo,
-            :empresa,
-            :cidade,
-            :telefone,
-            :status
-        )";
-
-        $stmt = $this->conn->prepare($sql);
-
-        return $stmt->execute([
-
-            ':nome'      => $dados['nome'],
-            ':tipo'      => $dados['tipo'],
-            ':empresa'   => $dados['empresa'],
-            ':cidade'    => $dados['cidade'],
-            ':telefone'  => $dados['telefone'],
-            ':status'    => $dados['status']
-
-        ]);
+        require "../app/views/equipes/create.php";
     }
 
-    public function buscarPorId($id)
+    public function salvar()
     {
-        $sql = "SELECT * FROM equipes WHERE id=:id";
+        $this->model->salvar($_POST);
 
-        $stmt = $this->conn->prepare($sql);
+        header("Location: index.php?modulo=equipes");
 
-        $stmt->execute([
-            ':id'=>$id
-        ]);
-
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        exit;
     }
 
-    public function atualizar($dados)
+    public function editar()
     {
-        $sql = "UPDATE equipes SET
+        $equipe = $this->model->buscarPorId($_GET['id']);
 
-        nome=:nome,
-        tipo=:tipo,
-        empresa=:empresa,
-        cidade=:cidade,
-        telefone=:telefone,
-        status=:status
-
-        WHERE id=:id";
-
-        $stmt = $this->conn->prepare($sql);
-
-        return $stmt->execute([
-
-            ':nome'=>$dados['nome'],
-            ':tipo'=>$dados['tipo'],
-            ':empresa'=>$dados['empresa'],
-            ':cidade'=>$dados['cidade'],
-            ':telefone'=>$dados['telefone'],
-            ':status'=>$dados['status'],
-            ':id'=>$dados['id']
-
-        ]);
+        require "../app/views/equipes/edit.php";
     }
 
-    public function excluir($id)
+    public function atualizar()
     {
-        $sql="DELETE FROM equipes WHERE id=:id";
+        $this->model->atualizar($_POST);
 
-        $stmt=$this->conn->prepare($sql);
+        header("Location: index.php?modulo=equipes");
 
-        return $stmt->execute([
-            ':id'=>$id
-        ]);
+        exit;
     }
 
-    public function pesquisar($pesquisa)
+    public function excluir()
     {
-        $sql="SELECT *
-              FROM equipes
-              WHERE nome LIKE :pesquisa
-                 OR empresa LIKE :pesquisa
-                 OR cidade LIKE :pesquisa
-              ORDER BY id DESC";
+        $this->model->excluir($_GET['id']);
 
-        $stmt=$this->conn->prepare($sql);
+        header("Location: index.php?modulo=equipes");
 
-        $stmt->execute([
-            ':pesquisa'=>"%".$pesquisa."%"
-        ]);
-
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        exit;
     }
 }

@@ -1,139 +1,171 @@
-<?php
+<?php require "../app/views/layout/header.php"; ?>
+<?php require "../app/views/layout/navbar.php"; ?>
 
-require_once "../config/database.php";
+<div class="d-flex justify-content-between align-items-center mb-4">
 
-class Chamado
-{
-    private $conn;
+    <h2>
 
-    public function __construct()
-    {
-        $database = new Database();
-        $this->conn = $database->conectar();
-    }
+        <i class="bi bi-people-fill"></i>
 
-    public function listar()
-    {
-        $sql = "SELECT * FROM chamados ORDER BY id DESC";
+        Equipes
 
-        $stmt = $this->conn->prepare($sql);
+    </h2>
 
-        $stmt->execute();
+    <a href="index.php?modulo=equipes&action=novo"
+       class="btn btn-primary">
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-    public function salvar($dados)
-    {
-    $sql = "INSERT INTO chamados
-            (cliente, cidade, prioridade, status, descricao, data_abertura)
-            VALUES
-            (:cliente, :cidade, :prioridade, :status, :descricao, :data_abertura)";
+        <i class="bi bi-plus-circle"></i>
 
-    $stmt = $this->conn->prepare($sql);
+        Nova Equipe
 
-    return $stmt->execute([
-        ':cliente' => $dados['cliente'],
-        ':cidade' => $dados['cidade'],
-        ':prioridade' => $dados['prioridade'],
-        ':status' => $dados['status'],
-        ':descricao' => $dados['descricao'],
-        ':data_abertura' => $dados['data_abertura']
-    ]);
-    }
-    public function excluir($id)
-    {
-    $sql = "DELETE FROM chamados WHERE id = :id";
+    </a>
 
-    $stmt = $this->conn->prepare($sql);
+</div>
 
-    return $stmt->execute([
-        ':id' => $id
-    ]);
-    }
+<form method="GET" action="index.php" class="row mb-4">
 
-    public function buscarPorId($id)
-{
-    $sql = "SELECT * FROM chamados WHERE id = :id";
+    <input type="hidden" name="modulo" value="equipes">
 
-    $stmt = $this->conn->prepare($sql);
+    <div class="col-md-8">
 
-    $stmt->execute([
-        ':id' => $id
-    ]);
+        <input
+            type="text"
+            name="pesquisa"
+            class="form-control"
+            placeholder="Pesquisar por nome, empresa ou cidade">
 
-    return $stmt->fetch(PDO::FETCH_ASSOC);
-}
+    </div>
 
-public function atualizar($dados)
-{
-    $sql = "UPDATE chamados SET
+    <div class="col-md-2">
 
-        cliente = :cliente,
-        cidade = :cidade,
-        prioridade = :prioridade,
-        status = :status,
-        descricao = :descricao,
-        data_abertura = :data_abertura
+        <button class="btn btn-primary w-100">
 
-        WHERE id = :id";
+            <i class="bi bi-search"></i>
 
-    $stmt = $this->conn->prepare($sql);
+            Pesquisar
 
-    return $stmt->execute([
-        ':cliente'=>$dados['cliente'],
-        ':cidade'=>$dados['cidade'],
-        ':prioridade'=>$dados['prioridade'],
-        ':status'=>$dados['status'],
-        ':descricao'=>$dados['descricao'],
-        ':data_abertura'=>$dados['data_abertura'],
-        ':id'=>$dados['id']
-    ]);
-}
+        </button>
 
-public function pesquisar($cliente)
-{
-    $sql = "SELECT * FROM chamados
-            WHERE cliente LIKE :cliente
-            ORDER BY id DESC";
+    </div>
 
-    $stmt = $this->conn->prepare($sql);
+    <div class="col-md-2">
 
-    $stmt->execute([
-        ':cliente' => "%".$cliente."%"
-    ]);
+        <a href="index.php?modulo=equipes"
+           class="btn btn-secondary w-100">
 
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
+            <i class="bi bi-x-circle"></i>
 
-public function dashboard()
-{
-    $sql = "SELECT status, COUNT(*) AS total
-            FROM chamados
-            GROUP BY status";
+            Limpar
 
-    $stmt = $this->conn->prepare($sql);
+        </a>
 
-    $stmt->execute();
+    </div>
 
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
+</form>
 
-public function totais()
-{
-    $sql = "SELECT
-            COUNT(*) AS total,
-            SUM(status='Aberto') AS abertos,
-            SUM(status='Em andamento') AS andamento,
-            SUM(status='Finalizado') AS finalizados
-            FROM chamados";
+<table class="table table-bordered table-striped">
 
-    $stmt = $this->conn->prepare($sql);
+    <thead class="table-dark">
 
-    $stmt->execute();
+        <tr>
 
-    return $stmt->fetch(PDO::FETCH_ASSOC);
-}
+            <th>ID</th>
+            <th>Nome</th>
+            <th>Tipo</th>
+            <th>Empresa</th>
+            <th>Cidade</th>
+            <th>Telefone</th>
+            <th>Status</th>
+            <th width="170">Ações</th>
 
+        </tr>
 
+    </thead>
 
-}   
+    <tbody>
+
+    <?php if(count($equipes)>0): ?>
+
+        <?php foreach($equipes as $equipe): ?>
+
+        <tr>
+
+            <td><?= $equipe['id'] ?></td>
+
+            <td><?= $equipe['nome'] ?></td>
+
+            <td><?= $equipe['tipo'] ?></td>
+
+            <td><?= $equipe['empresa'] ?></td>
+
+            <td><?= $equipe['cidade'] ?></td>
+
+            <td><?= $equipe['telefone'] ?></td>
+
+            <td>
+
+                <?php
+
+                switch($equipe['status']){
+
+                    case "Disponível":
+                        echo '<span class="badge bg-success">Disponível</span>';
+                        break;
+
+                    case "Em Atendimento":
+                        echo '<span class="badge bg-warning text-dark">Em Atendimento</span>';
+                        break;
+
+                    default:
+                        echo '<span class="badge bg-secondary">Folga</span>';
+
+                }
+
+                ?>
+
+            </td>
+
+            <td>
+
+                <a
+                href="index.php?modulo=equipes&action=editar&id=<?= $equipe['id'] ?>"
+                class="btn btn-warning btn-sm">
+
+                    <i class="bi bi-pencil-square"></i>
+
+                </a>
+
+                <a
+                href="index.php?modulo=equipes&action=excluir&id=<?= $equipe['id'] ?>"
+                class="btn btn-danger btn-sm"
+                onclick="return confirm('Deseja excluir esta equipe?')">
+
+                    <i class="bi bi-trash"></i>
+
+                </a>
+
+            </td>
+
+        </tr>
+
+        <?php endforeach; ?>
+
+    <?php else: ?>
+
+        <tr>
+
+            <td colspan="8" class="text-center">
+
+                Nenhuma equipe cadastrada.
+
+            </td>
+
+        </tr>
+
+    <?php endif; ?>
+
+    </tbody>
+
+</table>
+
+<?php require "../app/views/layout/footer.php"; ?>

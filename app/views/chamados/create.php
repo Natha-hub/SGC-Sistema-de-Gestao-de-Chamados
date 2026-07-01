@@ -38,7 +38,31 @@
 
     </div>
 
-    <div class="col-md-3 mb-3">
+    <div class="col-md-6 mb-3">
+
+        <label>Equipe Responsável</label>
+
+        <select
+            name="equipe_id"
+            class="form-select">
+
+            <option value="">Selecione...</option>
+
+            <?php foreach($equipes as $equipe): ?>
+
+                <option value="<?= $equipe['id'] ?>">
+
+                    <?= $equipe['nome'] ?>
+
+                </option>
+
+            <?php endforeach; ?>
+
+        </select>
+
+    </div>
+
+    <div class="col-md-4 mb-3">
 
         <label>Tipo</label>
 
@@ -58,7 +82,7 @@
 
     </div>
 
-    <div class="col-md-3 mb-3">
+    <div class="col-md-4 mb-3">
 
         <label>Prioridade</label>
 
@@ -90,7 +114,7 @@
 
     </div>
 
-    <div class="col-md-8 mb-3">
+    <div class="col-md-6 mb-3">
 
         <label>Data de Abertura</label>
 
@@ -134,8 +158,9 @@
 
 </button>
 
-<a href="index.php?modulo=chamados"
-   class="btn btn-secondary">
+<a
+href="index.php?modulo=chamados"
+class="btn btn-secondary">
 
     Cancelar
 

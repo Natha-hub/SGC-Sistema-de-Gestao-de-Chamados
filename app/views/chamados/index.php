@@ -31,6 +31,7 @@
 
 <th>ID</th>
 <th>Cliente</th>
+<th>Equipe</th>
 <th>Tipo</th>
 <th>Prioridade</th>
 <th>Status</th>
@@ -52,6 +53,8 @@
 <td><?= $chamado['id'] ?></td>
 
 <td><?= $chamado['cliente'] ?></td>
+
+<td><?= $chamado['equipe'] ?? '-' ?></td>
 
 <td><?= $chamado['tipo'] ?></td>
 

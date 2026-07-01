@@ -44,6 +44,32 @@ value="<?= $chamado['id'] ?>">
 
     </div>
 
+    <div class="col-md-6 mb-3">
+
+    <label>Equipe Responsável</label>
+
+    <select
+        name="equipe_id"
+        class="form-select">
+
+        <option value="">Selecione...</option>
+
+        <?php foreach($equipes as $equipe): ?>
+
+            <option
+                value="<?= $equipe['id'] ?>"
+                <?= $equipe['id']==$chamado['equipe_id'] ? 'selected' : '' ?>>
+
+                <?= $equipe['nome'] ?>
+
+            </option>
+
+        <?php endforeach; ?>
+
+    </select>
+
+</div>
+
     <div class="col-md-3 mb-3">
 
         <label>Tipo</label>

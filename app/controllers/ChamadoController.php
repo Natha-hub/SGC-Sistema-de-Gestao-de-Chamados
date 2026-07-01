@@ -19,14 +19,18 @@ class ChamadoController
         require "../app/views/chamados/index.php";
     }
 
-    public function novo()
-    {
-        $clienteModel = new Cliente();
+public function novo()
+{
+    $clienteModel = new Cliente();
+    $clientes = $clienteModel->listar();
 
-        $clientes = $clienteModel->listar();
+    require_once "../app/models/Equipe.php";
 
-        require "../app/views/chamados/create.php";
-    }
+    $equipeModel = new Equipe();
+    $equipes = $equipeModel->listar();
+
+    require "../app/views/chamados/create.php";
+}
 
     public function salvar()
     {
@@ -37,17 +41,20 @@ class ChamadoController
         exit;
     }
 
-    public function editar()
-    {
-        $chamado = $this->model->buscarPorId($_GET['id']);
+public function editar()
+{
+    $chamado = $this->model->buscarPorId($_GET['id']);
 
-        $clienteModel = new Cliente();
+    $clienteModel = new Cliente();
+    $clientes = $clienteModel->listar();
 
-        $clientes = $clienteModel->listar();
+    require_once "../app/models/Equipe.php";
 
-        require "../app/views/chamados/edit.php";
-    }
+    $equipeModel = new Equipe();
+    $equipes = $equipeModel->listar();
 
+    require "../app/views/chamados/edit.php";
+}
     public function atualizar()
     {
         $this->model->atualizar($_POST);

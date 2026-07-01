@@ -15,12 +15,24 @@ class Chamado
    public function listar()
 {
     $sql = "SELECT
-                chamados.*,
-                clientes.nome AS cliente
-            FROM chamados
-            INNER JOIN clientes
-                ON chamados.cliente_id = clientes.id
-            ORDER BY chamados.id DESC";
+
+            chamados.*,
+
+            clientes.nome AS cliente,
+
+            equipes.nome AS equipe
+
+        FROM chamados
+
+        INNER JOIN clientes
+
+            ON chamados.cliente_id = clientes.id
+
+        LEFT JOIN equipes
+
+            ON chamados.equipe_id = equipes.id
+
+        ORDER BY chamados.id DESC";
 
     $stmt = $this->conn->prepare($sql);
 
@@ -30,10 +42,43 @@ class Chamado
 }
  public function salvar($dados)
 {
+
+    switch($dados['tipo'])
+{
+    case "Sem conexão":
+        $prazo = 45;
+        break;
+
+    case "Lentidão":
+        $prazo = 120;
+        break;
+
+    case "Upgrade":
+        $prazo = 180;
+        break;
+
+    case "Mudança":
+        $prazo = 240;
+        break;
+
+    case "Instalação":
+        $prazo = 300;
+        break;
+
+    case "Retirada":
+        $prazo = 360;
+        break;
+
+    default:
+        $prazo = 300;
+}
+
     $sql = "INSERT INTO chamados
     (
         cliente_id,
+        equipe_id,
         tipo,
+        prazo_segundos,
         prioridade,
         status,
         descricao,
@@ -44,7 +89,9 @@ class Chamado
     VALUES
     (
         :cliente_id,
+        :equipe_id,
         :tipo,
+        :prazo_segundos,
         :prioridade,
         :status,
         :descricao,
@@ -54,10 +101,16 @@ class Chamado
 
     $stmt = $this->conn->prepare($sql);
 
+    if (empty($dados['equipe_id'])) {
+    $dados['equipe_id'] = null;
+}
+
     return $stmt->execute([
 
         ':cliente_id'    => $dados['cliente_id'],
+        ':equipe_id' => $dados['equipe_id'],
         ':tipo'          => $dados['tipo'],
+        ':prazo_segundos' => $prazo,
         ':prioridade'    => $dados['prioridade'],
         ':status'        => $dados['status'],
         ':descricao'     => $dados['descricao'],
@@ -98,6 +151,7 @@ public function atualizar($dados)
     $sql = "UPDATE chamados SET
 
         cliente_id = :cliente_id,
+        equipe_id = :equipe_id,
         tipo = :tipo,
         prioridade = :prioridade,
         status = :status,
@@ -113,6 +167,7 @@ public function atualizar($dados)
 
         ':cliente_id'    => $dados['cliente_id'],
         ':tipo'          => $dados['tipo'],
+        ':equipe_id'     => $dados['equipe_id'],
         ':prioridade'    => $dados['prioridade'],
         ':status'        => $dados['status'],
         ':descricao'     => $dados['descricao'],
