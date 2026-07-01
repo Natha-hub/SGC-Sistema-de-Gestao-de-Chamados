@@ -36,7 +36,8 @@
 <th>Prioridade</th>
 <th>Status</th>
 <th>SLA</th>
-<th>Data</th>
+<th>SLA Cumprido</th>
+<th>Abertura</th>
 <th width="190">Ações</th>
 
 </tr>
@@ -98,7 +99,41 @@ echo '<span class="badge bg-danger">Finalizado</span>';
 
 <td>
 
-<?= date('d/m/Y',strtotime($chamado['data_abertura'])) ?>
+<?php
+
+if($chamado['status'] != 'Finalizado')
+{
+
+    echo '<span class="badge bg-secondary">Em andamento</span>';
+
+}
+else
+{
+
+    $tempo = strtotime($chamado['data_encerramento']) - strtotime($chamado['data_abertura']);
+
+    if($tempo <= $chamado['prazo_segundos'])
+    {
+
+        echo '<span class="badge bg-success">Sim</span>';
+
+    }
+    else
+    {
+
+        echo '<span class="badge bg-danger">Não</span>';
+
+    }
+
+}
+
+?>
+
+</td>
+
+<td>
+
+<?= date('d/m/Y H:i:s', strtotime($chamado['data_abertura'])) ?>
 
 </td>
 
@@ -118,6 +153,14 @@ class="btn btn-danger btn-sm"
 onclick="return confirm('Excluir chamado?')">
 
 <i class="bi bi-trash"></i>
+
+</a>
+
+<a href="index.php?modulo=chamados&action=finalizar&id=<?= $chamado['id'] ?>"
+   class="btn btn-success btn-sm"
+   onclick="return confirm('Deseja finalizar este chamado?')">
+
+    <i class="bi bi-check-lg"></i>
 
 </a>
 

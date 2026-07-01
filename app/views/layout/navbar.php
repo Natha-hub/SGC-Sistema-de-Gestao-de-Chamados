@@ -72,18 +72,7 @@
 
             </li>
 
-            <li class="nav-item">
-
-                <a class="nav-link"
-                   href="index.php?modulo=agendamentos">
-
-                    <i class="bi bi-calendar-event"></i>
-
-                    Agenda
-
-                </a>
-
-            </li>
+            
 
             <li class="nav-item">
 

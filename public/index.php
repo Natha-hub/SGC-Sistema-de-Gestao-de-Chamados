@@ -54,6 +54,12 @@ switch($modulo)
 switch($action)
 {
 
+    case 'finalizar':
+
+        $controller->finalizar();
+
+    break;
+
     case 'novo':
 
         $controller->novo();

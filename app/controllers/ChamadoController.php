@@ -72,4 +72,13 @@ public function editar()
 
         exit;
     }
+
+    public function finalizar()
+{
+    $this->model->finalizar($_GET['id']);
+
+    header("Location: index.php?modulo=chamados");
+
+    exit;
+}
 }

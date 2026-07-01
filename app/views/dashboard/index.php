@@ -65,7 +65,7 @@
 
             <div class="card-body text-center">
 
-                <h5>Agendamentos</h5>
+                <h5>Agendado</h5>
 
                 <h2><?= $agendamentos ?></h2>
 
@@ -116,93 +116,134 @@ const chamados = <?= json_encode($slas) ?>;
 
 const painel = document.getElementById("painelSLA");
 
-function atualizarPainel(){
+function atualizarPainel() {
 
-    painel.innerHTML="";
+    painel.innerHTML = "";
 
-    const abertura = Math.floor(
-    new Date(chamado.data_abertura.replace(" ", "T")).getTime()/1000
-);
+    chamados.sort((a, b) => {
 
-    chamados.forEach(chamado=>{
+    const agora = new Date();
 
-        const abertura = Math.floor(new Date(chamado.data_abertura).getTime()/1000);
+    const restanteA =
+        new Date(a.data_abertura.replace(" ", "T")).getTime()
+        + (a.prazo_segundos * 1000)
+        - agora.getTime();
 
-        const decorrido = agora - abertura;
+    const restanteB =
+        new Date(b.data_abertura.replace(" ", "T")).getTime()
+        + (b.prazo_segundos * 1000)
+        - agora.getTime();
 
-        console.log({
+    return restanteA - restanteB;
+
+});
+
+    chamados.forEach(chamado => {
+
+    const abertura = new Date(
+        chamado.data_abertura.replace(" ", "T")
+    );
+
+    const agora = new Date();
+
+    const decorrido = Math.floor(
+        (agora.getTime() - abertura.getTime()) / 1000
+    );
+
+    console.log({
     id: chamado.id,
-    agora,
-    abertura,
-    decorrido,
+    dataBanco: chamado.data_abertura,
+    abertura: abertura.toLocaleString(),
+    agora: agora.toLocaleString(),
+    decorrido: decorrido,
     prazo: chamado.prazo_segundos
 });
 
         let restante = chamado.prazo_segundos - decorrido;
 
-        if(restante < 0)
+        if (restante < 0)
             restante = 0;
 
-        let percentual = (restante/chamado.prazo_segundos)*100;
+        let percentual = (restante / chamado.prazo_segundos) * 100;
 
-        if(percentual < 0)
+        if (percentual < 0)
             percentual = 0;
 
-        let cor="bg-success";
+        let cor = "bg-success";
 
-        if(percentual<=50)
-            cor="bg-warning";
+if (restante <= 0){
 
-        if(percentual<=20)
-            cor="bg-danger";
+    cor = "bg-danger";
 
-        const minutos = Math.floor(restante/60);
+}
+else if(percentual <= 20){
 
-        const segundos = restante%60;
+    cor = "bg-danger";
 
-        const tempo =
-            minutos.toString().padStart(2,"0")+
-            ":"+
-            segundos.toString().padStart(2,"0");
+}
+else if(percentual <= 50){
+
+    cor = "bg-warning";
+
+}
+
+        if (percentual <= 50)
+            cor = "bg-warning";
+
+        if (percentual <= 20)
+            cor = "bg-danger";
+
+        const minutos = Math.floor(restante / 60);
+
+        const segundos = restante % 60;
+
+       let tempo;
+
+if (restante <= 0) {
+
+    tempo = "ATRASADO";
+
+} else {
+
+    tempo =
+        minutos.toString().padStart(2, "0") +
+        ":" +
+        segundos.toString().padStart(2, "0");
+
+}
 
         painel.innerHTML += `
+            <div class="mb-4">
 
-        <div class="mb-4">
+                <div class="d-flex justify-content-between">
 
-            <div class="d-flex justify-content-between">
+                    <strong>
+                        OS #${chamado.id} - ${chamado.cliente}
+                    </strong>
 
-                <strong>
+                   <strong class="${
+    restante <= 0 ? 'text-danger' : 'text-white'
+}">
 
-                    OS #${chamado.id} - ${chamado.cliente}
+    ${tempo}
 
-                </strong>
+</strong>
+                </div>
 
-                <strong>
+                <small class="text-secondary">
+                    ${chamado.tipo}
+                </small>
 
-                    ${tempo}
+                <div class="progress mt-2" style="height:22px;">
 
-                </strong>
-
-            </div>
-
-            <small class="text-secondary">
-
-                ${chamado.tipo}
-
-            </small>
-
-            <div class="progress mt-2" style="height:22px;">
-
-                <div
-                    class="progress-bar ${cor}"
-                    style="width:${percentual}%">
+                    <div
+                        class="progress-bar ${cor}"
+                        style="width:${percentual}%">
+                    </div>
 
                 </div>
 
             </div>
-
-        </div>
-
         `;
 
     });
@@ -210,6 +251,8 @@ function atualizarPainel(){
 }
 
 atualizarPainel();
+
+setInterval(atualizarPainel, 1000);
 
 </script>
 

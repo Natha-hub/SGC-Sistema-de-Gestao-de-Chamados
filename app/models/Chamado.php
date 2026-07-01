@@ -247,5 +247,18 @@ public function listarSLA()
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
+public function finalizar($id)
+{
+    $sql = "UPDATE chamados
+            SET status = 'Finalizado',
+                data_encerramento = NOW()
+            WHERE id = :id";
+
+    $stmt = $this->conn->prepare($sql);
+
+    return $stmt->execute([
+        ':id' => $id
+    ]);
+}
 
 }   
