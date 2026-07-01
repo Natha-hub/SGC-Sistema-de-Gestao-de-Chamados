@@ -115,7 +115,7 @@ class Chamado
         ':status'        => $dados['status'],
         ':descricao'     => $dados['descricao'],
         ':observacao'    => $dados['observacao'],
-        ':data_abertura' => $dados['data_abertura']
+        ':data_abertura' => date('Y-m-d H:i:s')
 
     ]);
 }
@@ -222,6 +222,30 @@ public function totais()
     return $stmt->fetch(PDO::FETCH_ASSOC);
 }
 
+public function listarSLA()
+{
+    $sql = "SELECT
+
+                chamados.id,
+                clientes.nome AS cliente,
+                chamados.tipo,
+                chamados.prazo_segundos,
+                chamados.data_abertura
+
+            FROM chamados
+
+            INNER JOIN clientes
+                ON clientes.id = chamados.cliente_id
+
+            WHERE chamados.status <> 'Finalizado'
+
+            ORDER BY chamados.id";
+
+    $stmt = $this->conn->prepare($sql);
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 
 
 }   

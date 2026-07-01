@@ -1,5 +1,7 @@
 <?php
 
+date_default_timezone_set('America/Sao_Paulo');
+
 $modulo = $_GET['modulo'] ?? 'dashboard';
 
 $action = $_GET['action'] ?? 'index';

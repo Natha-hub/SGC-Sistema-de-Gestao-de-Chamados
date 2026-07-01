@@ -1,6 +1,7 @@
 <?php
 
 require_once "../config/database.php";
+require_once "../app/models/Chamado.php";
 
 class DashboardController
 {
@@ -12,16 +13,20 @@ class DashboardController
         $this->conn = $database->conectar();
     }
 
-    public function index()
-    {
-        $clientes = $this->conn->query("SELECT COUNT(*) FROM clientes")->fetchColumn();
+public function index()
+{
+    $clientes = $this->conn->query("SELECT COUNT(*) FROM clientes")->fetchColumn();
 
-        $chamados = $this->conn->query("SELECT COUNT(*) FROM chamados")->fetchColumn();
+    $chamados = $this->conn->query("SELECT COUNT(*) FROM chamados")->fetchColumn();
 
-        $equipes = $this->conn->query("SELECT COUNT(*) FROM equipes")->fetchColumn();
+    $equipes = $this->conn->query("SELECT COUNT(*) FROM equipes")->fetchColumn();
 
-        $agendamentos = $this->conn->query("SELECT COUNT(*) FROM agendamentos")->fetchColumn();
+    $agendamentos = $this->conn->query("SELECT COUNT(*) FROM agendamentos")->fetchColumn();
 
-        require "../app/views/dashboard/index.php";
-    }
+    $chamadoModel = new Chamado();
+
+    $slas = $chamadoModel->listarSLA();
+
+    require "../app/views/dashboard/index.php";
+}
 }

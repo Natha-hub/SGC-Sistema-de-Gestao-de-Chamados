@@ -35,6 +35,7 @@
 <th>Tipo</th>
 <th>Prioridade</th>
 <th>Status</th>
+<th>SLA</th>
 <th>Data</th>
 <th width="190">Ações</th>
 
@@ -86,6 +87,12 @@ echo '<span class="badge bg-danger">Finalizado</span>';
 }
 
 ?>
+
+</td>
+
+<td>
+
+<?= gmdate("i:s", $chamado['prazo_segundos']) ?>
 
 </td>
 
