@@ -2,7 +2,7 @@
 
 require_once "../config/database.php";
 
-class Chamado
+class Equipe
 {
     private $conn;
 
@@ -14,7 +14,7 @@ class Chamado
 
     public function listar()
     {
-        $sql = "SELECT * FROM chamados ORDER BY id DESC";
+        $sql = "SELECT * FROM equipes ORDER BY id DESC";
 
         $stmt = $this->conn->prepare($sql);
 
@@ -22,118 +22,110 @@ class Chamado
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
     public function salvar($dados)
     {
-    $sql = "INSERT INTO chamados
-            (cliente, cidade, prioridade, status, descricao, data_abertura)
-            VALUES
-            (:cliente, :cidade, :prioridade, :status, :descricao, :data_abertura)";
+        $sql = "INSERT INTO equipes
+        (
+            nome,
+            tipo,
+            empresa,
+            cidade,
+            telefone,
+            status
+        )
 
-    $stmt = $this->conn->prepare($sql);
+        VALUES
+        (
+            :nome,
+            :tipo,
+            :empresa,
+            :cidade,
+            :telefone,
+            :status
+        )";
 
-    return $stmt->execute([
-        ':cliente' => $dados['cliente'],
-        ':cidade' => $dados['cidade'],
-        ':prioridade' => $dados['prioridade'],
-        ':status' => $dados['status'],
-        ':descricao' => $dados['descricao'],
-        ':data_abertura' => $dados['data_abertura']
-    ]);
-    }
-    public function excluir($id)
-    {
-    $sql = "DELETE FROM chamados WHERE id = :id";
+        $stmt = $this->conn->prepare($sql);
 
-    $stmt = $this->conn->prepare($sql);
+        return $stmt->execute([
 
-    return $stmt->execute([
-        ':id' => $id
-    ]);
+            ':nome'      => $dados['nome'],
+            ':tipo'      => $dados['tipo'],
+            ':empresa'   => $dados['empresa'],
+            ':cidade'    => $dados['cidade'],
+            ':telefone'  => $dados['telefone'],
+            ':status'    => $dados['status']
+
+        ]);
     }
 
     public function buscarPorId($id)
-{
-    $sql = "SELECT * FROM chamados WHERE id = :id";
+    {
+        $sql = "SELECT * FROM equipes WHERE id=:id";
 
-    $stmt = $this->conn->prepare($sql);
+        $stmt = $this->conn->prepare($sql);
 
-    $stmt->execute([
-        ':id' => $id
-    ]);
+        $stmt->execute([
+            ':id'=>$id
+        ]);
 
-    return $stmt->fetch(PDO::FETCH_ASSOC);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function atualizar($dados)
+    {
+        $sql = "UPDATE equipes SET
+
+        nome=:nome,
+        tipo=:tipo,
+        empresa=:empresa,
+        cidade=:cidade,
+        telefone=:telefone,
+        status=:status
+
+        WHERE id=:id";
+
+        $stmt = $this->conn->prepare($sql);
+
+        return $stmt->execute([
+
+            ':nome'=>$dados['nome'],
+            ':tipo'=>$dados['tipo'],
+            ':empresa'=>$dados['empresa'],
+            ':cidade'=>$dados['cidade'],
+            ':telefone'=>$dados['telefone'],
+            ':status'=>$dados['status'],
+            ':id'=>$dados['id']
+
+        ]);
+    }
+
+    public function excluir($id)
+    {
+        $sql="DELETE FROM equipes WHERE id=:id";
+
+        $stmt=$this->conn->prepare($sql);
+
+        return $stmt->execute([
+            ':id'=>$id
+        ]);
+    }
+
+    public function pesquisar($pesquisa)
+    {
+        $sql="SELECT *
+              FROM equipes
+              WHERE nome LIKE :pesquisa
+                 OR empresa LIKE :pesquisa
+                 OR cidade LIKE :pesquisa
+              ORDER BY id DESC";
+
+        $stmt=$this->conn->prepare($sql);
+
+        $stmt->execute([
+            ':pesquisa'=>"%".$pesquisa."%"
+        ]);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
-
-public function atualizar($dados)
-{
-    $sql = "UPDATE chamados SET
-
-        cliente = :cliente,
-        cidade = :cidade,
-        prioridade = :prioridade,
-        status = :status,
-        descricao = :descricao,
-        data_abertura = :data_abertura
-
-        WHERE id = :id";
-
-    $stmt = $this->conn->prepare($sql);
-
-    return $stmt->execute([
-        ':cliente'=>$dados['cliente'],
-        ':cidade'=>$dados['cidade'],
-        ':prioridade'=>$dados['prioridade'],
-        ':status'=>$dados['status'],
-        ':descricao'=>$dados['descricao'],
-        ':data_abertura'=>$dados['data_abertura'],
-        ':id'=>$dados['id']
-    ]);
-}
-
-public function pesquisar($cliente)
-{
-    $sql = "SELECT * FROM chamados
-            WHERE cliente LIKE :cliente
-            ORDER BY id DESC";
-
-    $stmt = $this->conn->prepare($sql);
-
-    $stmt->execute([
-        ':cliente' => "%".$cliente."%"
-    ]);
-
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
-
-public function dashboard()
-{
-    $sql = "SELECT status, COUNT(*) AS total
-            FROM chamados
-            GROUP BY status";
-
-    $stmt = $this->conn->prepare($sql);
-
-    $stmt->execute();
-
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
-
-public function totais()
-{
-    $sql = "SELECT
-            COUNT(*) AS total,
-            SUM(status='Aberto') AS abertos,
-            SUM(status='Em andamento') AS andamento,
-            SUM(status='Finalizado') AS finalizados
-            FROM chamados";
-
-    $stmt = $this->conn->prepare($sql);
-
-    $stmt->execute();
-
-    return $stmt->fetch(PDO::FETCH_ASSOC);
-}
-
-
-
-}   
