@@ -1,139 +1,130 @@
-<?php
+<?php require "../app/views/layout/header.php"; ?>
+<?php require "../app/views/layout/navbar.php"; ?>
 
-require_once "../config/database.php";
+<div class="d-flex justify-content-between align-items-center mb-4">
 
-class Chamado
-{
-    private $conn;
+    <h2>
 
-    public function __construct()
-    {
-        $database = new Database();
-        $this->conn = $database->conectar();
-    }
+        <i class="bi bi-people"></i>
 
-    public function listar()
-    {
-        $sql = "SELECT * FROM chamados ORDER BY id DESC";
+        Clientes
 
-        $stmt = $this->conn->prepare($sql);
+    </h2>
 
-        $stmt->execute();
+    <a href="index.php?modulo=clientes&action=novo"
+       class="btn btn-primary">
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-    public function salvar($dados)
-    {
-    $sql = "INSERT INTO chamados
-            (cliente, cidade, prioridade, status, descricao, data_abertura)
-            VALUES
-            (:cliente, :cidade, :prioridade, :status, :descricao, :data_abertura)";
+        <i class="bi bi-plus-circle"></i>
 
-    $stmt = $this->conn->prepare($sql);
+        Novo Cliente
 
-    return $stmt->execute([
-        ':cliente' => $dados['cliente'],
-        ':cidade' => $dados['cidade'],
-        ':prioridade' => $dados['prioridade'],
-        ':status' => $dados['status'],
-        ':descricao' => $dados['descricao'],
-        ':data_abertura' => $dados['data_abertura']
-    ]);
-    }
-    public function excluir($id)
-    {
-    $sql = "DELETE FROM chamados WHERE id = :id";
+    </a>
 
-    $stmt = $this->conn->prepare($sql);
+</div>
 
-    return $stmt->execute([
-        ':id' => $id
-    ]);
-    }
+<table class="table table-bordered table-striped">
 
-    public function buscarPorId($id)
-{
-    $sql = "SELECT * FROM chamados WHERE id = :id";
+    <thead class="table-dark">
 
-    $stmt = $this->conn->prepare($sql);
+        <tr>
 
-    $stmt->execute([
-        ':id' => $id
-    ]);
+            <th>ID</th>
+            <th>Nome</th>
+            <th>Telefone</th>
+            <th>Cidade</th>
+            <th>Plano</th>
+            <th>Status</th>
+            <th width="180">Ações</th>
 
-    return $stmt->fetch(PDO::FETCH_ASSOC);
-}
+        </tr>
 
-public function atualizar($dados)
-{
-    $sql = "UPDATE chamados SET
+    </thead>
 
-        cliente = :cliente,
-        cidade = :cidade,
-        prioridade = :prioridade,
-        status = :status,
-        descricao = :descricao,
-        data_abertura = :data_abertura
+    <tbody>
 
-        WHERE id = :id";
+    <?php if(count($clientes)>0): ?>
 
-    $stmt = $this->conn->prepare($sql);
+        <?php foreach($clientes as $cliente): ?>
 
-    return $stmt->execute([
-        ':cliente'=>$dados['cliente'],
-        ':cidade'=>$dados['cidade'],
-        ':prioridade'=>$dados['prioridade'],
-        ':status'=>$dados['status'],
-        ':descricao'=>$dados['descricao'],
-        ':data_abertura'=>$dados['data_abertura'],
-        ':id'=>$dados['id']
-    ]);
-}
+        <tr>
 
-public function pesquisar($cliente)
-{
-    $sql = "SELECT * FROM chamados
-            WHERE cliente LIKE :cliente
-            ORDER BY id DESC";
+            <td><?= $cliente['id'] ?></td>
 
-    $stmt = $this->conn->prepare($sql);
+            <td><?= $cliente['nome'] ?></td>
 
-    $stmt->execute([
-        ':cliente' => "%".$cliente."%"
-    ]);
+            <td><?= $cliente['telefone'] ?></td>
 
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
+            <td><?= $cliente['cidade'] ?></td>
 
-public function dashboard()
-{
-    $sql = "SELECT status, COUNT(*) AS total
-            FROM chamados
-            GROUP BY status";
+            <td><?= $cliente['plano'] ?></td>
 
-    $stmt = $this->conn->prepare($sql);
+            <td>
 
-    $stmt->execute();
+                <?php if($cliente['status']=="Ativo"): ?>
 
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
+                    <span class="badge bg-success">
 
-public function totais()
-{
-    $sql = "SELECT
-            COUNT(*) AS total,
-            SUM(status='Aberto') AS abertos,
-            SUM(status='Em andamento') AS andamento,
-            SUM(status='Finalizado') AS finalizados
-            FROM chamados";
+                        Ativo
 
-    $stmt = $this->conn->prepare($sql);
+                    </span>
 
-    $stmt->execute();
+                <?php else: ?>
 
-    return $stmt->fetch(PDO::FETCH_ASSOC);
-}
+                    <span class="badge bg-danger">
 
+                        Inativo
 
+                    </span>
 
-}   
+                <?php endif; ?>
+
+            </td>
+
+            <td>
+
+                <a
+                href="index.php?modulo=clientes&action=editar&id=<?= $cliente['id'] ?>"
+                class="btn btn-warning btn-sm">
+
+                    <i class="bi bi-pencil-square"></i>
+
+                    Editar
+
+                </a>
+
+                <a
+                href="index.php?modulo=clientes&action=excluir&id=<?= $cliente['id'] ?>"
+                class="btn btn-danger btn-sm"
+                onclick="return confirm('Deseja excluir este cliente?')">
+
+                    <i class="bi bi-trash"></i>
+
+                    Excluir
+
+                </a>
+
+            </td>
+
+        </tr>
+
+        <?php endforeach; ?>
+
+    <?php else: ?>
+
+        <tr>
+
+            <td colspan="7" class="text-center">
+
+                Nenhum cliente cadastrado.
+
+            </td>
+
+        </tr>
+
+    <?php endif; ?>
+
+    </tbody>
+
+</table>
+
+<?php require "../app/views/layout/footer.php"; ?>
