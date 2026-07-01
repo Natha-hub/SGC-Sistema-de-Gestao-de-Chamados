@@ -1,139 +1,146 @@
-<?php
+<?php require "../app/views/layout/header.php"; ?>
+<?php require "../app/views/layout/navbar.php"; ?>
 
-require_once "../config/database.php";
+<h2 class="mb-4">
 
-class Chamado
-{
-    private $conn;
+    <i class="bi bi-tools"></i>
 
-    public function __construct()
-    {
-        $database = new Database();
-        $this->conn = $database->conectar();
-    }
+    Novo Chamado
 
-    public function listar()
-    {
-        $sql = "SELECT * FROM chamados ORDER BY id DESC";
+</h2>
 
-        $stmt = $this->conn->prepare($sql);
+<form action="index.php?modulo=chamados&action=salvar" method="POST">
 
-        $stmt->execute();
+<div class="row">
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-    public function salvar($dados)
-    {
-    $sql = "INSERT INTO chamados
-            (cliente, cidade, prioridade, status, descricao, data_abertura)
-            VALUES
-            (:cliente, :cidade, :prioridade, :status, :descricao, :data_abertura)";
+    <div class="col-md-6 mb-3">
 
-    $stmt = $this->conn->prepare($sql);
+        <label>Cliente</label>
 
-    return $stmt->execute([
-        ':cliente' => $dados['cliente'],
-        ':cidade' => $dados['cidade'],
-        ':prioridade' => $dados['prioridade'],
-        ':status' => $dados['status'],
-        ':descricao' => $dados['descricao'],
-        ':data_abertura' => $dados['data_abertura']
-    ]);
-    }
-    public function excluir($id)
-    {
-    $sql = "DELETE FROM chamados WHERE id = :id";
+        <select
+            name="cliente_id"
+            class="form-select"
+            required>
 
-    $stmt = $this->conn->prepare($sql);
+            <option value="">Selecione...</option>
 
-    return $stmt->execute([
-        ':id' => $id
-    ]);
-    }
+            <?php foreach($clientes as $cliente): ?>
 
-    public function buscarPorId($id)
-{
-    $sql = "SELECT * FROM chamados WHERE id = :id";
+                <option value="<?= $cliente['id'] ?>">
 
-    $stmt = $this->conn->prepare($sql);
+                    <?= $cliente['nome'] ?>
 
-    $stmt->execute([
-        ':id' => $id
-    ]);
+                </option>
 
-    return $stmt->fetch(PDO::FETCH_ASSOC);
-}
+            <?php endforeach; ?>
 
-public function atualizar($dados)
-{
-    $sql = "UPDATE chamados SET
+        </select>
 
-        cliente = :cliente,
-        cidade = :cidade,
-        prioridade = :prioridade,
-        status = :status,
-        descricao = :descricao,
-        data_abertura = :data_abertura
+    </div>
 
-        WHERE id = :id";
+    <div class="col-md-3 mb-3">
 
-    $stmt = $this->conn->prepare($sql);
+        <label>Tipo</label>
 
-    return $stmt->execute([
-        ':cliente'=>$dados['cliente'],
-        ':cidade'=>$dados['cidade'],
-        ':prioridade'=>$dados['prioridade'],
-        ':status'=>$dados['status'],
-        ':descricao'=>$dados['descricao'],
-        ':data_abertura'=>$dados['data_abertura'],
-        ':id'=>$dados['id']
-    ]);
-}
+        <select
+            name="tipo"
+            class="form-select">
 
-public function pesquisar($cliente)
-{
-    $sql = "SELECT * FROM chamados
-            WHERE cliente LIKE :cliente
-            ORDER BY id DESC";
+            <option>Sem conexão</option>
+            <option>Lentidão</option>
+            <option>Instalação</option>
+            <option>Mudança</option>
+            <option>Upgrade</option>
+            <option>Retirada</option>
+            <option>Outro</option>
 
-    $stmt = $this->conn->prepare($sql);
+        </select>
 
-    $stmt->execute([
-        ':cliente' => "%".$cliente."%"
-    ]);
+    </div>
 
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
+    <div class="col-md-3 mb-3">
 
-public function dashboard()
-{
-    $sql = "SELECT status, COUNT(*) AS total
-            FROM chamados
-            GROUP BY status";
+        <label>Prioridade</label>
 
-    $stmt = $this->conn->prepare($sql);
+        <select
+            name="prioridade"
+            class="form-select">
 
-    $stmt->execute();
+            <option>Baixa</option>
+            <option>Media</option>
+            <option>Alta</option>
 
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
+        </select>
 
-public function totais()
-{
-    $sql = "SELECT
-            COUNT(*) AS total,
-            SUM(status='Aberto') AS abertos,
-            SUM(status='Em andamento') AS andamento,
-            SUM(status='Finalizado') AS finalizados
-            FROM chamados";
+    </div>
 
-    $stmt = $this->conn->prepare($sql);
+    <div class="col-md-4 mb-3">
 
-    $stmt->execute();
+        <label>Status</label>
 
-    return $stmt->fetch(PDO::FETCH_ASSOC);
-}
+        <select
+            name="status"
+            class="form-select">
 
+            <option>Aberto</option>
+            <option>Em Atendimento</option>
+            <option>Finalizado</option>
 
+        </select>
 
-}   
+    </div>
+
+    <div class="col-md-8 mb-3">
+
+        <label>Data de Abertura</label>
+
+        <input
+            type="date"
+            name="data_abertura"
+            class="form-control"
+            value="<?= date('Y-m-d') ?>">
+
+    </div>
+
+    <div class="col-md-12 mb-3">
+
+        <label>Descrição</label>
+
+        <textarea
+            name="descricao"
+            class="form-control"
+            rows="4"></textarea>
+
+    </div>
+
+    <div class="col-md-12 mb-3">
+
+        <label>Observação</label>
+
+        <textarea
+            name="observacao"
+            class="form-control"
+            rows="4"></textarea>
+
+    </div>
+
+</div>
+
+<button class="btn btn-success">
+
+    <i class="bi bi-check-circle"></i>
+
+    Salvar Chamado
+
+</button>
+
+<a href="index.php?modulo=chamados"
+   class="btn btn-secondary">
+
+    Cancelar
+
+</a>
+
+</form>
+
+<?php require "../app/views/layout/footer.php"; ?>

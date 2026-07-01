@@ -1,139 +1,138 @@
+<?php require "../app/views/layout/header.php"; ?>
+<?php require "../app/views/layout/navbar.php"; ?>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <h2>
+
+        <i class="bi bi-tools"></i>
+
+        Chamados
+
+    </h2>
+
+    <a
+    href="index.php?modulo=chamados&action=novo"
+    class="btn btn-primary">
+
+        <i class="bi bi-plus-circle"></i>
+
+        Novo Chamado
+
+    </a>
+
+</div>
+
+<table class="table table-bordered table-striped">
+
+<thead class="table-dark">
+
+<tr>
+
+<th>ID</th>
+<th>Cliente</th>
+<th>Tipo</th>
+<th>Prioridade</th>
+<th>Status</th>
+<th>Data</th>
+<th width="190">Ações</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<?php if(count($chamados)>0): ?>
+
+<?php foreach($chamados as $chamado): ?>
+
+<tr>
+
+<td><?= $chamado['id'] ?></td>
+
+<td><?= $chamado['cliente'] ?></td>
+
+<td><?= $chamado['tipo'] ?></td>
+
+<td><?= $chamado['prioridade'] ?></td>
+
+<td>
+
 <?php
 
-require_once "../config/database.php";
-
-class Chamado
+switch($chamado['status'])
 {
-    private $conn;
 
-    public function __construct()
-    {
-        $database = new Database();
-        $this->conn = $database->conectar();
-    }
+case "Aberto":
 
-    public function listar()
-    {
-        $sql = "SELECT * FROM chamados ORDER BY id DESC";
+echo '<span class="badge bg-success">Aberto</span>';
 
-        $stmt = $this->conn->prepare($sql);
+break;
 
-        $stmt->execute();
+case "Em Atendimento":
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-    public function salvar($dados)
-    {
-    $sql = "INSERT INTO chamados
-            (cliente, cidade, prioridade, status, descricao, data_abertura)
-            VALUES
-            (:cliente, :cidade, :prioridade, :status, :descricao, :data_abertura)";
+echo '<span class="badge bg-warning text-dark">Em Atendimento</span>';
 
-    $stmt = $this->conn->prepare($sql);
+break;
 
-    return $stmt->execute([
-        ':cliente' => $dados['cliente'],
-        ':cidade' => $dados['cidade'],
-        ':prioridade' => $dados['prioridade'],
-        ':status' => $dados['status'],
-        ':descricao' => $dados['descricao'],
-        ':data_abertura' => $dados['data_abertura']
-    ]);
-    }
-    public function excluir($id)
-    {
-    $sql = "DELETE FROM chamados WHERE id = :id";
+default:
 
-    $stmt = $this->conn->prepare($sql);
+echo '<span class="badge bg-danger">Finalizado</span>';
 
-    return $stmt->execute([
-        ':id' => $id
-    ]);
-    }
-
-    public function buscarPorId($id)
-{
-    $sql = "SELECT * FROM chamados WHERE id = :id";
-
-    $stmt = $this->conn->prepare($sql);
-
-    $stmt->execute([
-        ':id' => $id
-    ]);
-
-    return $stmt->fetch(PDO::FETCH_ASSOC);
 }
 
-public function atualizar($dados)
-{
-    $sql = "UPDATE chamados SET
+?>
 
-        cliente = :cliente,
-        cidade = :cidade,
-        prioridade = :prioridade,
-        status = :status,
-        descricao = :descricao,
-        data_abertura = :data_abertura
+</td>
 
-        WHERE id = :id";
+<td>
 
-    $stmt = $this->conn->prepare($sql);
+<?= date('d/m/Y',strtotime($chamado['data_abertura'])) ?>
 
-    return $stmt->execute([
-        ':cliente'=>$dados['cliente'],
-        ':cidade'=>$dados['cidade'],
-        ':prioridade'=>$dados['prioridade'],
-        ':status'=>$dados['status'],
-        ':descricao'=>$dados['descricao'],
-        ':data_abertura'=>$dados['data_abertura'],
-        ':id'=>$dados['id']
-    ]);
-}
+</td>
 
-public function pesquisar($cliente)
-{
-    $sql = "SELECT * FROM chamados
-            WHERE cliente LIKE :cliente
-            ORDER BY id DESC";
+<td>
 
-    $stmt = $this->conn->prepare($sql);
+<a
+href="index.php?modulo=chamados&action=editar&id=<?= $chamado['id'] ?>"
+class="btn btn-warning btn-sm">
 
-    $stmt->execute([
-        ':cliente' => "%".$cliente."%"
-    ]);
+<i class="bi bi-pencil-square"></i>
 
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
+</a>
 
-public function dashboard()
-{
-    $sql = "SELECT status, COUNT(*) AS total
-            FROM chamados
-            GROUP BY status";
+<a
+href="index.php?modulo=chamados&action=excluir&id=<?= $chamado['id'] ?>"
+class="btn btn-danger btn-sm"
+onclick="return confirm('Excluir chamado?')">
 
-    $stmt = $this->conn->prepare($sql);
+<i class="bi bi-trash"></i>
 
-    $stmt->execute();
+</a>
 
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
+</td>
 
-public function totais()
-{
-    $sql = "SELECT
-            COUNT(*) AS total,
-            SUM(status='Aberto') AS abertos,
-            SUM(status='Em andamento') AS andamento,
-            SUM(status='Finalizado') AS finalizados
-            FROM chamados";
+</tr>
 
-    $stmt = $this->conn->prepare($sql);
+<?php endforeach; ?>
 
-    $stmt->execute();
+<?php else: ?>
 
-    return $stmt->fetch(PDO::FETCH_ASSOC);
-}
+<tr>
 
+<td colspan="7" class="text-center">
 
+Nenhum chamado cadastrado.
 
-}   
+</td>
+
+</tr>
+
+<?php endif; ?>
+
+</tbody>
+
+</table>
+
+<?php require "../app/views/layout/footer.php"; ?>

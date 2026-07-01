@@ -19,7 +19,7 @@
 
                 <h5>Clientes</h5>
 
-                <h2>0</h2>
+               <h2><?= $clientes ?></h2>
 
             </div>
 
@@ -35,7 +35,7 @@
 
                 <h5>Chamados</h5>
 
-                <h2>0</h2>
+                <h2><?= $chamados ?></h2>
 
             </div>
 
@@ -51,7 +51,7 @@
 
                 <h5>Equipes</h5>
 
-                <h2>0</h2>
+                <h2><?= $equipes ?></h2>
 
             </div>
 
@@ -67,7 +67,7 @@
 
                 <h5>Agendamentos</h5>
 
-                <h2>0</h2>
+                <h2><?= $agendamentos ?></h2>
 
             </div>
 
