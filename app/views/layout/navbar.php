@@ -85,6 +85,18 @@
 
             </li>
 
+            <li class="nav-item">
+
+                <button
+                    id="btnTema"
+                    class="btn btn-outline-light ms-3">
+
+                    🌙
+
+                </button>
+
+            </li>
+
         </ul>
 
     </div>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" data-bs-theme="light" id="html">
 
 <head>
 
@@ -14,6 +14,13 @@
     <link rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 
+    <script>
+
+    const tema = localStorage.getItem('tema') || 'light';
+
+    document.documentElement.setAttribute('data-bs-theme', tema);
+
+</script>
 </head>
 
 <body>

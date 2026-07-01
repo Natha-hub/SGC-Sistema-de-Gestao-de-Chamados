@@ -131,4 +131,22 @@ class Cliente
             ':id' => $id
         ]);
     }
+
+    public function pesquisar($pesquisa)
+{
+    $sql = "SELECT * FROM clientes
+            WHERE nome LIKE :pesquisa
+               OR cidade LIKE :pesquisa
+               OR telefone LIKE :pesquisa
+            ORDER BY nome";
+
+    $stmt = $this->conn->prepare($sql);
+
+    $stmt->execute([
+        ':pesquisa' => "%".$pesquisa."%"
+    ]);
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
 }

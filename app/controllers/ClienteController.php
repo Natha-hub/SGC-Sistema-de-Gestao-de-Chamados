@@ -12,11 +12,18 @@ class ClienteController
     }
 
     public function index()
+{
+    if(isset($_GET['pesquisa']) && $_GET['pesquisa'] != "")
+    {
+        $clientes = $this->model->pesquisar($_GET['pesquisa']);
+    }
+    else
     {
         $clientes = $this->model->listar();
-
-        require "../app/views/clientes/index.php";
     }
+
+    require "../app/views/clientes/index.php";
+}
 
     public function novo()
     {

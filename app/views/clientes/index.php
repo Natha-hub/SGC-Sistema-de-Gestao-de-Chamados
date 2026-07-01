@@ -22,6 +22,54 @@
 
 </div>
 
+<form
+method="GET"
+action="index.php"
+class="row mb-4">
+
+<input
+type="hidden"
+name="modulo"
+value="clientes">
+
+<div class="col-md-8">
+
+    <input
+    type="text"
+    name="pesquisa"
+    class="form-control"
+    placeholder="Pesquisar por nome, cidade ou telefone"
+    value="<?= $_GET['pesquisa'] ?? '' ?>">
+</div>
+
+
+<div class="col-md-2">
+
+    <button class="btn btn-primary w-100">
+
+        <i class="bi bi-search"></i>
+
+        Pesquisar
+
+    </button>
+
+</div>
+
+<div class="col-md-2">
+
+    <a href="index.php?modulo=clientes"
+       class="btn btn-secondary w-100">
+
+        <i class="bi bi-x-circle"></i>
+
+        Limpar
+
+    </a>
+
+</div>
+
+</form>
+
 <table class="table table-bordered table-striped">
 
     <thead class="table-dark">
