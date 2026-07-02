@@ -83,23 +83,7 @@ value="<?= $equipe['id'] ?>">
 
     </div>
 
-    <div class="col-md-4 mb-3">
-
-        <label>Status</label>
-
-        <select
-            name="status"
-            class="form-select">
-
-            <option <?= $equipe['status']=="Disponível"?"selected":"" ?>>Disponível</option>
-
-            <option <?= $equipe['status']=="Em Atendimento"?"selected":"" ?>>Em Atendimento</option>
-
-            <option <?= $equipe['status']=="Folga"?"selected":"" ?>>Folga</option>
-
-        </select>
-
-    </div>
+   
 
 </div>
 

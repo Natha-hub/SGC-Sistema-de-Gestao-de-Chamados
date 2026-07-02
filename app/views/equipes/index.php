@@ -75,7 +75,7 @@
             <th>Empresa</th>
             <th>Cidade</th>
             <th>Telefone</th>
-            <th>Status</th>
+            
             <th width="170">Ações</th>
 
         </tr>
@@ -106,20 +106,7 @@
 
                 <?php
 
-                switch($equipe['status']){
-
-                    case "Disponível":
-                        echo '<span class="badge bg-success">Disponível</span>';
-                        break;
-
-                    case "Em Atendimento":
-                        echo '<span class="badge bg-warning text-dark">Em Atendimento</span>';
-                        break;
-
-                    default:
-                        echo '<span class="badge bg-secondary">Folga</span>';
-
-                }
+                
 
                 ?>
 
