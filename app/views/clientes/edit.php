@@ -5,57 +5,53 @@
 
     <i class="bi bi-pencil-square"></i>
 
-    Editar Equipe
+    Editar Cliente
 
 </h2>
 
-<form action="index.php?modulo=equipes&action=atualizar" method="POST">
+<form action="index.php?modulo=clientes&action=atualizar" method="POST">
 
 <input
 type="hidden"
 name="id"
-value="<?= $equipe['id'] ?>">
+value="<?= $cliente['id'] ?>">
 
 <div class="row">
 
     <div class="col-md-6 mb-3">
 
-        <label>Nome da Equipe</label>
+        <label>Nome</label>
 
         <input
             type="text"
             name="nome"
             class="form-control"
-            value="<?= $equipe['nome'] ?>"
+            value="<?= $cliente['nome'] ?>"
             required>
 
     </div>
 
     <div class="col-md-3 mb-3">
 
-        <label>Tipo</label>
+        <label>Telefone</label>
 
-        <select
-            name="tipo"
-            class="form-select">
-
-            <option <?= $equipe['tipo']=="Própria"?"selected":"" ?>>Própria</option>
-
-            <option <?= $equipe['tipo']=="Terceirizada"?"selected":"" ?>>Terceirizada</option>
-
-        </select>
+        <input
+            type="text"
+            name="telefone"
+            class="form-control"
+            value="<?= $cliente['telefone'] ?>">
 
     </div>
 
     <div class="col-md-3 mb-3">
 
-        <label>Empresa</label>
+        <label>Email</label>
 
         <input
-            type="text"
-            name="empresa"
+            type="email"
+            name="email"
             class="form-control"
-            value="<?= $equipe['empresa'] ?>">
+            value="<?= $cliente['email'] ?>">
 
     </div>
 
@@ -67,23 +63,77 @@ value="<?= $equipe['id'] ?>">
             type="text"
             name="cidade"
             class="form-control"
-            value="<?= $equipe['cidade'] ?>">
+            value="<?= $cliente['cidade'] ?>">
 
     </div>
 
     <div class="col-md-4 mb-3">
 
-        <label>Telefone</label>
+        <label>Bairro</label>
 
         <input
             type="text"
-            name="telefone"
+            name="bairro"
             class="form-control"
-            value="<?= $equipe['telefone'] ?>">
+            value="<?= $cliente['bairro'] ?>">
 
     </div>
 
     <div class="col-md-4 mb-3">
+
+        <label>Endereço</label>
+
+        <input
+            type="text"
+            name="endereco"
+            class="form-control"
+            value="<?= $cliente['endereco'] ?>">
+
+    </div>
+
+    <div class="col-md-2 mb-3">
+
+        <label>Número</label>
+
+        <input
+            type="text"
+            name="numero"
+            class="form-control"
+            value="<?= $cliente['numero'] ?>">
+
+    </div>
+
+    <div class="col-md-5 mb-3">
+
+        <label>Plano</label>
+
+        <input
+            type="text"
+            name="plano"
+            class="form-control"
+            value="<?= $cliente['plano'] ?>">
+
+    </div>
+
+    <div class="col-md-3 mb-3">
+
+        <label>Tecnologia</label>
+
+        <select
+            name="tecnologia"
+            class="form-select">
+
+            <option <?= $cliente['tecnologia']=="FTTH"?"selected":"" ?>>FTTH</option>
+
+            <option <?= $cliente['tecnologia']=="Radio"?"selected":"" ?>>Radio</option>
+
+            <option <?= $cliente['tecnologia']=="Fibra Dedicada"?"selected":"" ?>>Fibra Dedicada</option>
+
+        </select>
+
+    </div>
+
+    <div class="col-md-2 mb-3">
 
         <label>Status</label>
 
@@ -91,11 +141,9 @@ value="<?= $equipe['id'] ?>">
             name="status"
             class="form-select">
 
-            <option <?= $equipe['status']=="Disponível"?"selected":"" ?>>Disponível</option>
+            <option <?= $cliente['status']=="Ativo"?"selected":"" ?>>Ativo</option>
 
-            <option <?= $equipe['status']=="Em Atendimento"?"selected":"" ?>>Em Atendimento</option>
-
-            <option <?= $equipe['status']=="Folga"?"selected":"" ?>>Folga</option>
+            <option <?= $cliente['status']=="Inativo"?"selected":"" ?>>Inativo</option>
 
         </select>
 
@@ -112,7 +160,7 @@ value="<?= $equipe['id'] ?>">
 </button>
 
 <a
-href="index.php?modulo=equipes"
+href="index.php?modulo=clientes"
 class="btn btn-secondary">
 
 Cancelar

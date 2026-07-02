@@ -21,7 +21,12 @@ public function index()
 
     $equipes = $this->conn->query("SELECT COUNT(*) FROM equipes")->fetchColumn();
 
-    $agendamentos = $this->conn->query("SELECT COUNT(*) FROM agendamentos")->fetchColumn();
+    $agendados = $this->conn->query("
+    SELECT COUNT(*)
+    FROM chamados
+    WHERE equipe_id IS NOT NULL
+      AND status <> 'Finalizado'
+")->fetchColumn();
 
     $chamadoModel = new Chamado();
 

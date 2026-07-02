@@ -65,9 +65,9 @@
 
             <div class="card-body text-center">
 
-                <h5>Agendado</h5>
+            <h5>Agendados</h5>
 
-                <h2><?= $agendamentos ?></h2>
+            <h2><?= $agendados ?></h2>
 
             </div>
 

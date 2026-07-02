@@ -7,6 +7,16 @@
         SGC
     </a>
 
+<div class="d-flex align-items-center">
+
+    <button
+        id="btnTema"
+        class="btn btn-outline-light me-2">
+
+        🌙
+
+    </button>
+
     <button class="navbar-toggler"
             type="button"
             data-bs-toggle="collapse"
@@ -15,6 +25,8 @@
         <span class="navbar-toggler-icon"></span>
 
     </button>
+
+</div>
 
     <div class="collapse navbar-collapse" id="menu">
 
@@ -74,15 +86,6 @@
 
             
 
-            <li class="nav-item">
-
-                <button
-                    id="btnTema"
-                    class="btn btn-outline-light ms-3">
-
-                    🌙
-
-                </button>
 
             </li>
 

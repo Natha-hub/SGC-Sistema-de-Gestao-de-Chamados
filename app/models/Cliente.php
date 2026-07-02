@@ -123,6 +123,20 @@ class Cliente
 
     public function excluir($id)
     {
+
+        $sql = "SELECT COUNT(*) FROM chamados WHERE cliente_id = :id";
+
+$stmt = $this->conn->prepare($sql);
+
+$stmt->execute([
+    ':id' => $id
+]);
+
+if($stmt->fetchColumn() > 0)
+{
+    return false;
+}
+
         $sql = "DELETE FROM clientes WHERE id=:id";
 
         $stmt = $this->conn->prepare($sql);

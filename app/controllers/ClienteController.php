@@ -57,9 +57,17 @@ class ClienteController
 
     public function excluir()
     {
-        $this->model->excluir($_GET['id']);
+       if(!$this->model->excluir($_GET['id']))
+{
+    echo "<script>
+            alert('Não é possível excluir um cliente que possui chamados.');
+            window.location='index.php?modulo=clientes';
+          </script>";
+    exit;
+}
 
-        header("Location: index.php?modulo=clientes");
+header("Location: index.php?modulo=clientes");
+exit;
 
         exit;
     }
