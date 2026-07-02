@@ -1,27 +1,25 @@
-# Sistema de Chamados - SGC
+# SGC
 
-Projeto desenvolvido para a disciplina de Linguagem de Programação IV.
+Sistema de Gestão de Chamados desenvolvido em PHP utilizando arquitetura MVC.
 
 ## Tecnologias
 
 - PHP
 - MySQL
-- Bootstrap 5
+- Bootstrap
 - JavaScript
-- Chart.js
-- Arquitetura MVC
+- HTML/CSS
 
 ## Funcionalidades
 
-- Cadastro de chamados
-- Listagem de chamados
-- Pesquisa por cliente
-- Edição de chamados
-- Exclusão de chamados
-- Dashboard com gráfico
-- Estatísticas por status
+- Cadastro de clientes
+- Cadastro de equipes
+- Abertura de chamados
+- Associação de equipes
+- SLA automático por tipo de chamado
+- Dashboard em tempo real
+- Finalização de chamados
 
-## Autor 
+## Autor
 
-Nathanael Pauczinski Vieira
-
+    Nathanael Pauczinski Vieira
