@@ -54,6 +54,12 @@ switch($modulo)
 switch($action)
 {
 
+    case 'importar':
+
+        $controller->importar();
+
+    break;
+
     case 'finalizar':
 
         $controller->finalizar();

@@ -20,6 +20,15 @@
 
     </a>
 
+    <a href="index.php?modulo=clientes&action=importar"
+   class="btn btn-warning">
+
+    <i class="bi bi-cloud-download"></i>
+
+    Importar Clientes
+
+    </a>
+
 </div>
 
 <form

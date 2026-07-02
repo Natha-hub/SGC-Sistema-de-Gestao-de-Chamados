@@ -55,16 +55,28 @@ class ClienteController
         exit;
     }
 
+        public function importar()
+{
+    $this->model->importarRandomUsers();
+
+    header("Location: index.php?modulo=clientes");
+
+    exit;
+}
+
     public function excluir()
     {
        if(!$this->model->excluir($_GET['id']))
-{
+    {
     echo "<script>
             alert('Não é possível excluir um cliente que possui chamados.');
             window.location='index.php?modulo=clientes';
           </script>";
     exit;
-}
+    }   
+
+
+
 
 header("Location: index.php?modulo=clientes");
 exit;

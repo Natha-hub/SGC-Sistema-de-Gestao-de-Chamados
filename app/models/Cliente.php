@@ -163,4 +163,68 @@ if($stmt->fetchColumn() > 0)
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
+public function importarRandomUsers()
+{
+    $json = file_get_contents("https://randomuser.me/api/?results=10&nat=br");
+
+    $dados = json_decode($json, true);
+
+    foreach($dados["results"] as $cliente)
+    {
+        $sql = "INSERT INTO clientes
+        (
+            nome,
+            telefone,
+            email,
+            cidade,
+            bairro,
+            endereco,
+            numero,
+            plano,
+            tecnologia,
+            status
+        )
+
+        VALUES
+        (
+            :nome,
+            :telefone,
+            :email,
+            :cidade,
+            :bairro,
+            :endereco,
+            :numero,
+            :plano,
+            :tecnologia,
+            :status
+        )";
+
+        $stmt = $this->conn->prepare($sql);
+
+        $stmt->execute([
+
+            ':nome' => $cliente["name"]["first"]." ".$cliente["name"]["last"],
+
+            ':telefone' => $cliente["phone"],
+
+            ':email' => $cliente["email"],
+
+            ':cidade' => $cliente["location"]["city"],
+
+            ':bairro' => "Centro",
+
+            ':endereco' => "Rua Principal",
+
+            ':numero' => rand(1,500),
+
+            ':plano' => "600 Mega",
+
+            ':tecnologia' => "FTTH",
+
+            ':status' => "Ativo"
+
+        ]);
+    }
+}
+
 }
