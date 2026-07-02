@@ -156,8 +156,8 @@ public function atualizar($dados)
         prioridade = :prioridade,
         status = :status,
         descricao = :descricao,
-        observacao = :observacao,
-        data_abertura = :data_abertura
+        observacao = :observacao
+        
 
         WHERE id = :id";
 
@@ -172,7 +172,6 @@ public function atualizar($dados)
         ':status'        => $dados['status'],
         ':descricao'     => $dados['descricao'],
         ':observacao'    => $dados['observacao'],
-        ':data_abertura' => $dados['data_abertura'],
         ':id'            => $dados['id']
 
     ]);

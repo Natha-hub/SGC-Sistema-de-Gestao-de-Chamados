@@ -191,21 +191,7 @@ foreach($statuss as $status)
 
     </div>
 
-    <div class="col-md-8 mb-3">
-
-        <label>Data</label>
-
-        <input
-
-        type="date"
-
-        name="data_abertura"
-
-        class="form-control"
-
-        value="<?= $chamado['data_abertura'] ?>">
-
-    </div>
+   
 
     <div class="col-md-12 mb-3">
 
